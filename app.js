@@ -27,7 +27,7 @@ const saveDb=d=>localStorage.setItem(DBKEY,JSON.stringify(d));
 const iso=d=>d.toISOString().slice(0,10);
 const todayKey=()=>{const n=new Date().getDay();return n===2?'tirsdag':n===4?'torsdag':n===0?'sondag':(n<2?'tirsdag':n<4?'torsdag':n<7?'sondag':'tirsdag')};
 const fmtDate=s=>new Date(s+'T12:00:00').toLocaleDateString('nb-NO',{day:'2-digit',month:'short',year:'numeric'});
-let activeDay=todayKey(), working=null;
+let activeDay=todayKey(), working=null, restTimer=null, restRemaining=0;
 
 function nav(view){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===view));document.querySelectorAll('.bottomnav button').forEach(b=>b.classList.toggle('active',b.dataset.view===view));if(view==='today')renderToday();if(view==='program')renderProgram();if(view==='progress')renderProgress();if(view==='exercises')renderExercises();}
 document.querySelectorAll('.bottomnav button').forEach(b=>b.onclick=()=>nav(b.dataset.view));
@@ -76,22 +76,36 @@ function startSession(day){
  DAYS[day].ex.forEach(x=>{const p=prev?.sets?.[x[0]]||[];working.sets[x[0]]=[0,1,2].map((_,i)=>({kg:p[i]?.kg||'',reps:p[i]?.reps||'',done:false}));});
  renderWorkout(day);
 }
+function exerciseDone(id){const sets=working?.sets?.[id]||[];return sets.length>0&&sets.every(s=>s.done);}
+function workoutProgress(day){const ex=DAYS[day].ex,total=ex.length,done=ex.filter(x=>exerciseDone(x[0])).length;return {done,total,pct:total?Math.round(done/total*100):0};}
+function nextExercise(day){return DAYS[day].ex.find(x=>!exerciseDone(x[0]))||null;}
 function renderWorkout(day){
- const d=DAYS[day],el=document.getElementById('today');
- el.innerHTML='<div class="card"><div class="row space"><div><span class="pill">Pågående økt</span><h2 style="margin-top:8px">'+d.label+'</h2></div><button class="btn secondary small" id="cancel">Avslutt uten å lagre</button></div>'+
+ const d=DAYS[day],el=document.getElementById('today'),p=workoutProgress(day),next=nextExercise(day);
+ el.innerHTML='<div class="card workout-head"><div class="row space"><div><span class="pill">Pågående økt</span><h2 style="margin-top:8px">'+d.label+'</h2></div><button class="btn secondary small" id="cancel">Avslutt uten å lagre</button></div>'+
+ '<div class="progressbox"><div class="row space"><b>'+p.done+' av '+p.total+' øvelser ferdig</b><span class="tiny">'+p.pct+' %</span></div><div class="progressbar"><span style="width:'+p.pct+'%"></span></div>'+(next?'<div class="nextline">Neste: <b>'+next[1]+'</b></div>':'<div class="nextline doneall">Alle øvelser ferdige</div>')+'</div>'+
  '<div class="backbox"><h3>Hvordan kjennes korsryggen før økten?</h3><div class="tiny">1 = bra, 5 = vond eller låst</div>'+backScale('backBefore',working.backBefore)+'</div>'+
  '<label class="sub">Tredemølle, minutter</label><input id="walk" class="fullinput" inputmode="numeric" value="'+working.walkMinutes+'" placeholder="f.eks. 25"></div>'+
+ '<div class="restdock"><div><div class="tiny">Hviletimer</div><b id="restDisplay">'+(restRemaining?formatTimer(restRemaining):'Klar')+'</b></div><div class="row"><button class="btn secondary small" data-rest="60">60 sek</button><button class="btn secondary small" data-rest="90">90 sek</button><button class="btn small" id="restStop">Stopp</button></div></div>'+
  d.ex.map((x,idx)=>workoutExercise(x,idx)).join('')+
  '<div class="card"><div class="backbox"><h3>Hvordan kjennes korsryggen etter økten?</h3>'+backScale('backAfter',working.backAfter)+'</div><label class="sub">Kommentar til økten</label><textarea id="notes" class="note" placeholder="F.eks. ryggen kjentes bra, øk vekten neste gang">'+(working.notes||'')+'</textarea><button class="btn" id="saveSession" style="width:100%;margin-top:12px">Lagre økten</button></div>';
- document.getElementById('cancel').onclick=()=>{working=null;renderToday()};
+ document.getElementById('cancel').onclick=()=>{stopRestTimer();working=null;renderToday()};
  document.getElementById('walk').oninput=e=>working.walkMinutes=e.target.value;
  document.getElementById('notes').oninput=e=>working.notes=e.target.value;
  el.querySelectorAll('[data-ex]').forEach(inp=>inp.oninput=()=>{const [id,i,field]=inp.dataset.ex.split('|');working.sets[id][+i][field]=inp.value});
- el.querySelectorAll('[data-done]').forEach(b=>b.onclick=()=>{const [id,i]=b.dataset.done.split('|');working.sets[id][+i].done=!working.sets[id][+i].done;b.classList.toggle('done');b.textContent=working.sets[id][+i].done?'✓':'○'});
+ el.querySelectorAll('[data-done]').forEach(b=>b.onclick=()=>{const [id,i]=b.dataset.done.split('|');working.sets[id][+i].done=!working.sets[id][+i].done;renderWorkout(day);if(working.sets[id][+i].done)startRestTimer(60)});
  el.querySelectorAll('[data-info]').forEach(b=>b.onclick=()=>openExercise(findExercise(b.dataset.info)));
  el.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>{const [field,val]=b.dataset.back.split('|');working[field]=Number(val);el.querySelectorAll('[data-back^="'+field+'|"]').forEach(x=>x.classList.remove('active'));b.classList.add('active')});
+ el.querySelectorAll('[data-rest]').forEach(b=>b.onclick=()=>startRestTimer(Number(b.dataset.rest)));
+ document.getElementById('restStop').onclick=stopRestTimer;
  document.getElementById('saveSession').onclick=finishSession;
 }
+function formatTimer(sec){const m=Math.floor(sec/60),s=sec%60;return m+':'+String(s).padStart(2,'0');}
+function startRestTimer(seconds){
+ stopRestTimer();restRemaining=seconds;updateRestDisplay();
+ restTimer=setInterval(()=>{restRemaining--;updateRestDisplay();if(restRemaining<=0){stopRestTimer();try{navigator.vibrate?.([180,100,180]);}catch(e){}alert('Hvilepausen er ferdig.');}},1000);
+}
+function stopRestTimer(){if(restTimer)clearInterval(restTimer);restTimer=null;restRemaining=0;updateRestDisplay();}
+function updateRestDisplay(){const e=document.getElementById('restDisplay');if(e)e.textContent=restRemaining?formatTimer(restRemaining):'Klar';}
 function workoutExercise(x,idx){
  const sets=working.sets[x[0]],st=exerciseStats(x[0],x[2]);
  const suggestion=x[0]==='birddog'?'Kroppsvekt':st.suggestion?st.suggestion+' kg':'Registrer første økt';
@@ -109,6 +123,16 @@ function openExercise(x){
 }
 document.querySelector('#exerciseDialog .close').onclick=()=>document.getElementById('exerciseDialog').close();
 function renderExercises(){const seen=new Set(),all=[];Object.values(DAYS).forEach(d=>d.ex.forEach(x=>{if(!seen.has(x[0])){seen.add(x[0]);all.push(x)}}));document.getElementById('exercises').innerHTML=`<div class="card"><h2>Øvelsesbibliotek</h2><div class="sub">Trykk på en øvelse for bilde og huskeregel.</div>${all.map(x=>`<div class="exercise"><img class="thumb" src="${x[3]}"><div><h4>${x[1]}</h4><div class="meta">${x[2]}</div></div><button class="check" data-open="${x[0]}">›</button></div>`).join('')}</div>`;document.querySelectorAll('#exercises [data-open]').forEach(b=>b.onclick=()=>openExercise(findExercise(b.dataset.open)));}
+function exportData(){
+ const payload={app:'Runes trening',version:1,exportedAt:new Date().toISOString(),data:db()};
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='rune-trening-backup-'+iso(new Date())+'.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+function importData(file){
+ const r=new FileReader();
+ r.onload=()=>{try{const obj=JSON.parse(r.result);const data=obj.data||obj;if(!data||!Array.isArray(data.sessions))throw new Error('Ugyldig fil');if(!confirm('Dette erstatter treningshistorikken som ligger på denne enheten. Fortsette?'))return;saveDb(data);alert('Sikkerhetskopien er importert.');renderProgress();}catch(e){alert('Kunne ikke lese sikkerhetskopien.');}};
+ r.readAsText(file);
+}
 function renderProgress(){
  const sessions=db().sessions.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
  const total=sessions.length,month=new Date().toISOString().slice(0,7),monthCount=sessions.filter(s=>s.date.startsWith(month)).length,walk=sessions.reduce((a,s)=>a+(+s.walkMinutes||0),0);
@@ -117,9 +141,9 @@ function renderProgress(){
  const el=document.getElementById('progress');
  el.innerHTML='<div class="statgrid"><div class="stat"><b>'+total+'</b><span class="tiny">økter totalt</span></div><div class="stat"><b>'+monthCount+'</b><span class="tiny">denne måneden</span></div><div class="stat"><b>'+walk+'</b><span class="tiny">min gange</span></div></div>'+
  (latestBack?'<div class="card"><h3>Siste ryggstatus</h3><div class="back-summary">Før: <b>'+(latestBack.backBefore||'–')+'/5</b> '+backLabel(latestBack.backBefore)+' · Etter: <b>'+(latestBack.backAfter||'–')+'/5</b> '+backLabel(latestBack.backAfter)+'</div></div>':'')+
- '<div class="card"><h3>Styrkeutvikling</h3><select id="chartEx" class="fullselect">'+ids.map(id=>{const x=findExercise(id);return '<option value="'+id+'">'+x[1]+'</option>'}).join('')+'</select><div class="chartwrap" style="margin-top:12px"><canvas id="chart"></canvas></div><div class="tiny" style="margin-top:8px">Grafen viser høyeste registrerte vekt for øvelsen per økt.</div></div>'+
+ '<div class="card"><h3>Sikkerhetskopi</h3><div class="sub">Lagre treningshistorikken før du bytter mobil eller sletter nettleserdata.</div><div class="backup-actions"><button class="btn" id="exportBtn">Eksporter data</button><label class="btn secondary import-label">Importer data<input id="importFile" type="file" accept="application/json,.json" hidden></label></div></div><div class="card"><h3>Styrkeutvikling</h3><select id="chartEx" class="fullselect">'+ids.map(id=>{const x=findExercise(id);return '<option value="'+id+'">'+x[1]+'</option>'}).join('')+'</select><div class="chartwrap" style="margin-top:12px"><canvas id="chart"></canvas></div><div class="tiny" style="margin-top:8px">Grafen viser høyeste registrerte vekt for øvelsen per økt.</div></div>'+
  '<div class="card"><h3>Historikk</h3>'+(sessions.length?sessions.map(s=>'<div class="history-item"><div>'+fmtDate(s.date)+'</div><div>'+DAYS[s.day].label+(s.backBefore?'<div class="tiny">Rygg '+s.backBefore+'/5 → '+(s.backAfter||'–')+'/5</div>':'')+'</div><div class="metric">'+(s.walkMinutes||0)+' min</div></div>').join(''):'<div class="empty">Ingen økter lagret ennå.</div>')+'</div>';
- const sel=document.getElementById('chartEx');sel.onchange=()=>drawChart(sel.value);drawChart(sel.value);
+ document.getElementById('exportBtn').onclick=exportData;document.getElementById('importFile').onchange=e=>{if(e.target.files[0])importData(e.target.files[0])};const sel=document.getElementById('chartEx');sel.onchange=()=>drawChart(sel.value);drawChart(sel.value);
 }
 function drawChart(id){const cvs=document.getElementById('chart');if(!cvs)return;const ctx=cvs.getContext('2d'),rect=cvs.getBoundingClientRect(),dpr=devicePixelRatio||1;cvs.width=rect.width*dpr;cvs.height=rect.height*dpr;ctx.scale(dpr,dpr);const W=rect.width,H=rect.height;ctx.clearRect(0,0,W,H);const pts=db().sessions.filter(s=>s.sets?.[id]).map(s=>({date:s.date,val:Math.max(0,...s.sets[id].map(z=>Number(z.kg)||0))})).filter(p=>p.val>0).sort((a,b)=>a.date.localeCompare(b.date));ctx.strokeStyle='#dce6ec';ctx.lineWidth=1;for(let i=0;i<5;i++){const y=20+i*(H-50)/4;ctx.beginPath();ctx.moveTo(36,y);ctx.lineTo(W-12,y);ctx.stroke()}if(!pts.length){ctx.fillStyle='#667784';ctx.font='14px system-ui';ctx.fillText('Registrer vekt på øvelsen for å få graf.',45,H/2);return}const max=Math.max(...pts.map(p=>p.val))*1.1,min=0;const x=i=>36+(pts.length===1?(W-60)/2:i*(W-60)/(pts.length-1));const y=v=>H-30-(v-min)/(max-min||1)*(H-55);ctx.strokeStyle='#16324f';ctx.lineWidth=3;ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(x(i),y(p.val)):ctx.moveTo(x(i),y(p.val)));ctx.stroke();ctx.fillStyle='#16324f';pts.forEach((p,i)=>{ctx.beginPath();ctx.arc(x(i),y(p.val),4,0,Math.PI*2);ctx.fill()});ctx.fillStyle='#667784';ctx.font='11px system-ui';ctx.fillText(`${Math.round(max)} kg`,4,24);ctx.fillText('0',18,H-28);}
 
