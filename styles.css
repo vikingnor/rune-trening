@@ -9,3 +9,10 @@
 .back-summary{margin-top:8px;padding:9px 11px;border-radius:12px;background:var(--sand);font-size:13px}
 .detail-img{max-height:68vh!important;object-fit:contain!important;background:white}
 @media(max-width:520px){.workout-stats div{display:block}.workout-stats b{display:block;text-align:left;margin-top:2px}.backscale button{padding:7px 2px}.backscale button span{font-size:8px}}
+
+.progressbox{margin:14px 0 4px;padding:12px;border-radius:14px;background:#f5f8fa;border:1px solid var(--line)}
+.progressbar{height:10px;background:#e8eef2;border-radius:999px;overflow:hidden;margin:8px 0}.progressbar span{display:block;height:100%;background:var(--ok);border-radius:999px}
+.nextline{font-size:13px;color:var(--muted)}.nextline b{color:var(--ink)}.doneall{color:var(--ok);font-weight:800}
+.restdock{position:sticky;top:82px;z-index:15;background:var(--sand);border:1px solid #ead9a5;border-radius:16px;padding:10px 12px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 4px 16px rgba(16,37,54,.08)}
+.restdock #restDisplay{font-size:22px}.backup-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.import-label{display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+@media(max-width:520px){.restdock{top:76px;align-items:flex-start;flex-direction:column}.restdock .row{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr}.restdock .btn{padding:10px 8px;font-size:13px}.backup-actions .btn{flex:1}}
