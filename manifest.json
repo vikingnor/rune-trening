@@ -1,0 +1,9 @@
+{
+  "name":"Runes trening",
+  "short_name":"Trening",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#f7fafb",
+  "theme_color":"#16324f",
+  "description":"Personlig treningsapp for tirsdag, torsdag og søndag"
+}
