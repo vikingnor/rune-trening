@@ -1,4 +1,4 @@
-const CACHE='rune-trening-v7';
+const CACHE='rune-trening-v8';
 const FILES=['./','index.html','styles.css','app.js','manifest.json','assets/situps-maskin.jpg',
 'assets/tirsdag-1.jpg','assets/tirsdag-2.jpg','assets/tirsdag-3.jpg','assets/tirsdag-4.jpg','assets/tirsdag-5.jpg',
 'assets/torsdag-1.jpg','assets/torsdag-2.jpg','assets/torsdag-3.jpg','assets/torsdag-4.jpg','assets/torsdag-5.jpg',
