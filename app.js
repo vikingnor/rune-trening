@@ -7,7 +7,7 @@ const DAYS={
   ['birddog','Bird dog','2 × 8 per side','assets/tirsdag-5.jpg','Hold bekkenet stabilt. Beveg rolig og kontrollert.']
  ]},
  torsdag:{label:'Torsdag',card:'assets/torsdag.jpg',walk:'20–25 min rolig til moderat gange',ex:[
-  ['chestrow','Bryststøttet roing','3 × 8–12','assets/torsdag-1.jpg','La brystet ligge stødig mot benken. Trekk albuene bakover.'],
+  ['absmachine','Situps-maskin','3 × 10–12','assets/situps-maskin.svg','Hold korsryggen støttet og beveg deg kontrollert. Ikke trekk med nakken.'],
   ['shoulder','Skulderpress med manualer','3 × 8–12','assets/torsdag-2.jpg','Stram magen og unngå å svaie i korsryggen.'],
   ['pulldown','Nedtrekk','3 × 8–12','assets/torsdag-3.jpg','Trekk albuene ned og hold bevegelsen kontrollert.'],
   ['lunges','Gående utfall med manualer','2–3 × 8–10 per bein','assets/torsdag-4.jpg','Ta kontrollerte steg. Bruk lettere manualer til teknikken sitter.'],
@@ -16,7 +16,7 @@ const DAYS={
  sondag:{label:'Søndag',card:'assets/sondag.jpg',walk:'25–30 min rolig til moderat gange',ex:[
   ['legpress','Beinpress i maskin','2–3 × 10','assets/sondag-1.jpg','Hold korsryggen mot ryggstøtten.'],
   ['incline','Skråbenk med manualer','2–3 × 10','assets/sondag-2.jpg','Rolig senkefase og stabil skulderposisjon.'],
-  ['machinerow','Bryststøttet roing i maskin','2–3 × 10','assets/sondag-3.jpg','Brystet mot puten. Trekk håndtakene kontrollert bakover.'],
+  ['absmachine','Situps-maskin','2–3 × 10–12','assets/situps-maskin.svg','Hold korsryggen støttet og beveg deg kontrollert. Ikke trekk med nakken.'],
   ['pulldown','Nedtrekk','2–3 × 8–10','assets/sondag-4.jpg','Trekk stangen mot øvre bryst.'],
   ['pallof','Pallof press','2 × 10 per side','assets/sondag-5.jpg','Hold overkroppen rett frem mens kabelen trekker fra siden.']
  ]}
