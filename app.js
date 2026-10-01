@@ -69,7 +69,14 @@ function renderToday(){
  document.getElementById('changeDay').onclick=()=>{const keys=['tirsdag','torsdag','sondag'];activeDay=keys[(keys.indexOf(activeDay)+1)%3];renderToday()};
  el.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openExercise(findExercise(b.dataset.open)));
 }
-function renderProgram(){const el=document.getElementById('program');el.innerHTML=`<div class="daytabs">${Object.entries(DAYS).map(([k,d])=>`<button data-day="${k}" class="${k===activeDay?'active':''}">${d.label}</button>`).join('')}</div><div class="card"><img class="program-img" src="${DAYS[activeDay].card}" alt="${DAYS[activeDay].label} treningsprogram"></div>`;el.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{activeDay=b.dataset.day;renderProgram()});}
+function renderProgram(){
+ const el=document.getElementById('program'),d=DAYS[activeDay];
+ el.innerHTML='<div class="daytabs">'+Object.entries(DAYS).map(([k,v])=>'<button data-day="'+k+'" class="'+(k===activeDay?'active':'')+'">'+v.label+'</button>').join('')+'</div>'+
+ '<div class="card"><h2>'+d.label+'</h2><div class="sub">Tredemølle: '+d.walk+'</div>'+
+ d.ex.map((x,i)=>'<div class="exercise"><img class="thumb" src="'+x[3]+'" alt="'+x[1]+'"><div><h4>'+(i+1)+'. '+x[1]+'</h4><div class="meta">'+x[2]+'</div></div><button class="check" data-open="'+x[0]+'">›</button></div>').join('')+'</div>';
+ el.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{activeDay=b.dataset.day;renderProgram()});
+ el.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openExercise(findExercise(b.dataset.open)));
+}
 function startSession(day){
  const prev=latestSession(day);
  working={day,date:iso(new Date()),walkMinutes:'',notes:'',backBefore:'',backAfter:'',sets:{}};
