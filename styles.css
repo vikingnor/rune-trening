@@ -16,3 +16,10 @@
 .restdock{position:sticky;top:82px;z-index:15;background:var(--sand);border:1px solid #ead9a5;border-radius:16px;padding:10px 12px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 4px 16px rgba(16,37,54,.08)}
 .restdock #restDisplay{font-size:22px}.backup-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.import-label{display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
 @media(max-width:520px){.restdock{top:76px;align-items:flex-start;flex-direction:column}.restdock .row{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr}.restdock .btn{padding:10px 8px;font-size:13px}.backup-actions .btn{flex:1}}
+
+.setline{grid-template-columns:52px 1fr 1fr 38px 36px}
+.copybtn{border:1px solid var(--line)!important;background:white!important;border-radius:10px;height:40px;font-size:18px;font-weight:800;color:var(--navy)}.copybtn:disabled{opacity:.3}
+.weekstatus{margin-top:8px;font-size:13px;color:var(--muted)}.weekbig{padding:12px;border-radius:14px;background:var(--blue);font-size:15px}.weekbig b{font-size:22px;margin-right:5px}
+.sessiontime{margin:10px 0 8px;font-size:13px;color:var(--muted)}
+.switchlist{display:grid;gap:8px;margin-top:14px}.switchitem{width:100%;display:grid;grid-template-columns:72px 1fr;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:white;border-radius:14px;padding:9px}.switchitem img{width:72px;height:55px;object-fit:cover;border-radius:10px}.switchitem b{display:block;color:var(--ink)}.switchitem small{display:block;color:var(--muted);margin-top:2px}
+@media(max-width:520px){.setline{grid-template-columns:46px 1fr 1fr 34px 34px;gap:6px}.copybtn{height:38px}}
