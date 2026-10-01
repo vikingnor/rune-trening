@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
+<rect width="800" height="520" fill="#ffffff"/>
+<rect x="55" y="70" width="690" height="380" rx="34" fill="#f7fafb" stroke="#dce6ec" stroke-width="4"/>
+<text x="70" y="115" font-family="Arial,sans-serif" font-size="34" font-weight="700" fill="#16324f">Situps-maskin</text>
+<g transform="translate(130 135)">
+  <rect x="250" y="190" width="230" height="48" rx="18" fill="#425466"/>
+  <rect x="410" y="70" width="55" height="150" rx="18" fill="#6b7c8a"/>
+  <rect x="460" y="45" width="24" height="220" rx="12" fill="#98a6b3"/>
+  <rect x="475" y="55" width="80" height="18" rx="9" fill="#16324f"/>
+  <circle cx="290" cy="105" r="30" fill="#d8b29a"/>
+  <path d="M310 135 C350 150 365 175 372 220" fill="none" stroke="#5d7f95" stroke-width="34" stroke-linecap="round"/>
+  <path d="M365 205 L435 205" stroke="#d8b29a" stroke-width="20" stroke-linecap="round"/>
+  <path d="M370 220 L315 285" stroke="#333" stroke-width="26" stroke-linecap="round"/>
+  <path d="M315 285 L250 315" stroke="#333" stroke-width="24" stroke-linecap="round"/>
+  <path d="M330 225 L385 292" stroke="#333" stroke-width="26" stroke-linecap="round"/>
+  <path d="M385 292 L440 315" stroke="#333" stroke-width="24" stroke-linecap="round"/>
+  <path d="M520 120 Q585 175 520 230" fill="none" stroke="#2e7d5b" stroke-width="16" stroke-linecap="round"/>
+  <polygon points="515,220 548,232 525,255" fill="#2e7d5b"/>
+</g>
+<text x="70" y="420" font-family="Arial,sans-serif" font-size="24" fill="#667784">Beveg overkroppen rolig frem og tilbake. Hold magen aktiv.</text>
+</svg>
