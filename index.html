@@ -1,37 +1,21 @@
 <!doctype html>
 <html lang="no">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#16324f" />
-  <title>Runes trening</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-<header class="topbar">
-  <div><div class="eyebrow">Personlig treningsapp</div><h1>Runes trening</h1></div>
-  <button id="installBtn" class="ghost" hidden>Installer</button>
-</header>
-
-<main>
-  <section id="today" class="view active"></section>
-  <section id="program" class="view"></section>
-  <section id="progress" class="view"></section>
-  <section id="exercises" class="view"></section>
-</main>
-
-<nav class="bottomnav" aria-label="Hovedmeny">
-  <button data-view="today" class="active"><span>●</span>I dag</button>
-  <button data-view="program"><span>▦</span>Program</button>
-  <button data-view="progress"><span>↗</span>Fremgang</button>
-  <button data-view="exercises"><span>☰</span>Øvelser</button>
-</nav>
-
-<dialog id="exerciseDialog">
-  <button class="close" aria-label="Lukk">×</button>
-  <div id="dialogBody"></div>
-</dialog>
-<script src="app.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Runes trening</title>
+    <meta name="description" content="Personlig treningsapp med treningsprogram for tirsdag, torsdag og søndag, sett- og repetisjonssporing, hviletimer, rygghelseskala og fremgangsgrafer." />
+    <meta property="og:title" content="Runes trening" />
+    <meta property="og:description" content="Personlig treningsapp med treningsprogram for tirsdag, torsdag og søndag, sett- og repetisjonssporing, hviletimer, rygghelseskala og fremgangsgrafer." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#16324f" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2316324f'/><path d='M30 75 V25 H52 Q68 25 68 40 Q68 53 54 55 L70 75 H55 L42 57 H30 V75 Z M30 46 H50 Q56 46 56 40 Q56 34 50 34 H30 Z' fill='%23e7f3ee'/></svg>" />
+    <script type="module" crossorigin src="./assets/index-uWj5aDah.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-C3lXTTHg.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>
+
